@@ -1,5 +1,6 @@
 package com.example.app_news.ui
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -28,6 +29,7 @@ class SearchActivity : AbstractActivity(), ViewHome.View{
         presenter = SearchPresenter(this, dataSource)
         configRecycle()
         search()
+        clickAdapter()
     }
 
     private fun search(){
@@ -54,6 +56,14 @@ class SearchActivity : AbstractActivity(), ViewHome.View{
                     this@SearchActivity, DividerItemDecoration.VERTICAL
                 )
             )
+        }
+    }
+    private fun clickAdapter(){
+        mainAdapter.setOnClickListener { article ->
+            val intent = Intent(this, ArticleActivity::class.java)
+            intent.putExtra("article", article)
+            startActivity(intent)
+
         }
     }
     override fun showProgressBar() {
