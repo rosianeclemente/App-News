@@ -9,4 +9,7 @@ interface ViewHome {
         fun hideProgressbar()
         fun showArticles(articles: List<Article>)
     }
+    interface  Favorite{
+        fun showArticles(articles: List<Article>)
+    }
 }

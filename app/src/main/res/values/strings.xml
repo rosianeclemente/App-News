@@ -15,4 +15,11 @@
     <string name="source">fonte</string>
     <string name="published_at">publicado em</string>
     <string name="pesquisar">Pesquisar</string>
+
+    <string name="favorite">Favoritos</string>
+    <string name="search_menu">Pesquisar…</string>
+    <string name="search_query_hint">Pesquise noticias pelo mundo…</string>
+    <string name="article_saved_successful">Artigo salvo com sucesso!</string>
+    <string name="article_delete_successful">Artigo deletado com sucesso</string>
+    <string name="undo">desfazer</string>
 </resources>

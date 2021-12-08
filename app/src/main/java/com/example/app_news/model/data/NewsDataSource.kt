@@ -1,13 +1,19 @@
 package com.example.app_news.model.data
 
+import android.content.Context
+import com.example.app_news.model.Article
+import com.example.app_news.model.db.ArticleDatabase
 import com.example.app_news.network.RetrofitInstance
+import com.example.app_news.presenter.favorite.FavoriteHome
 import com.example.app_news.presenter.news.NewsHome
 import com.example.app_news.presenter.search.SearchHome
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
-class NewsDataSource {
+class NewsDataSource(context: Context) {
+
+    private var db: ArticleDatabase = ArticleDatabase(context)
+    private var newsRepository: NewsRepository = NewsRepository(db)
+
     fun getBreakingNews(callback: NewsHome.Presenter) {
         GlobalScope.launch(Dispatchers.Main) {
             val response = RetrofitInstance.api.getBreakingNews("br")
@@ -33,6 +39,28 @@ class NewsDataSource {
             } else{
                 callback.onError(response.message())
                 callback.onComplete()
+            }
+        }
+    }
+    fun saveArticle(article: Article){
+        GlobalScope.launch(Dispatchers.Main){
+            newsRepository.updateInsert(article)
+        }
+    }
+    fun getAllArticle(callback: FavoriteHome.Presenter){
+        var allArticles: List<Article>
+        CoroutineScope(Dispatchers.IO).launch {
+            allArticles = newsRepository.getAll()
+
+            withContext(Dispatchers.Main){
+                callback.onSuccess(allArticles)
+            }
+        }
+    }
+    fun deleteArticle(article: Article?){
+        GlobalScope.launch(Dispatchers.Main) {
+            article?.let {articleSafe ->
+                newsRepository.delete(articleSafe)
             }
         }
     }

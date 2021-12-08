@@ -3,6 +3,9 @@ package com.example.app_news.presenter.favorite
 import com.example.app_news.model.Article
 
 interface FavoriteHome {
-    fun showArticles(articles: List<Article>)
+    interface Presenter{
+        fun onSuccess(articles: List<Article>)
+    }
+
 
 }
