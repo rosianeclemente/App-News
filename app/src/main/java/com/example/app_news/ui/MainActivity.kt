@@ -11,30 +11,36 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.app_news.R
 import com.example.app_news.adapter.MainAdapter
+import com.example.app_news.databinding.ActivityMainBinding
 import com.example.app_news.model.Article
 import com.example.app_news.model.data.NewsDataSource
 import com.example.app_news.presenter.ViewHome
 import com.example.app_news.presenter.news.NewsPresenter
-import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AbstractActivity() , ViewHome.View{
+
+class MainActivity : AppCompatActivity() , ViewHome.View{
     private val mainAdapter by lazy{
         MainAdapter()
     }
     private lateinit var presenter: NewsPresenter
+    private lateinit var binding: ActivityMainBinding
 
-    override fun getLayout(): Int = R.layout.activity_main
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
-    override fun onInject() {
+
         val dataSource = NewsDataSource(this)
         presenter = NewsPresenter(this, dataSource)
         presenter.requestAll()
         configRecycle()
         clickAdapter()
-
     }
+
     private fun configRecycle(){
-        with(rvNews){
+        with(binding.rvNews){
             adapter = mainAdapter
             layoutManager = LinearLayoutManager(this@MainActivity)
             addItemDecoration(
@@ -54,7 +60,7 @@ class MainActivity : AbstractActivity() , ViewHome.View{
     }
 
     override fun showProgressBar() {
-        rvProgressBar.visibility = View.VISIBLE
+        binding.rvProgressBar.visibility = View.VISIBLE
     }
 
     override fun showFailure(message: String) {
@@ -62,7 +68,7 @@ class MainActivity : AbstractActivity() , ViewHome.View{
     }
 
     override fun hideProgressbar() {
-        rvProgressBar.visibility = View.INVISIBLE
+        binding.rvProgressBar.visibility = View.INVISIBLE
     }
 
     override fun showArticles(articles: List<Article>) {

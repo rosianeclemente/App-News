@@ -1,29 +1,35 @@
 package com.example.app_news.ui
 
 import android.content.Intent
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.app_news.R
 import com.example.app_news.adapter.MainAdapter
+import com.example.app_news.databinding.ActivityFavoriteBinding
 import com.example.app_news.model.Article
 import com.example.app_news.model.data.NewsDataSource
 import com.example.app_news.presenter.ViewHome
 import com.example.app_news.presenter.favorite.FavoritePresenter
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_favorite.*
-import kotlinx.android.synthetic.main.activity_search.*
 
-class FavoriteActivity : AbstractActivity(), ViewHome.Favorite{
+
+class FavoriteActivity : AppCompatActivity(), ViewHome.Favorite{
     private val mainAdapter by lazy{
         MainAdapter()
     }
     private lateinit var presenter: FavoritePresenter
+    private lateinit var binding: ActivityFavoriteBinding
 
-    override fun getLayout(): Int = R.layout.activity_favorite
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityFavoriteBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
-    override fun onInject() {
         val dataSource = NewsDataSource(this)
         presenter = FavoritePresenter(this, dataSource)
         presenter.getAll()
@@ -44,16 +50,16 @@ class FavoriteActivity : AbstractActivity(), ViewHome.Favorite{
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-               val position = viewHolder.adapterPosition
+                val position = viewHolder.adapterPosition
                 val article = mainAdapter.differ.currentList[position]
                 presenter.deleteArticle(article)
                 Snackbar.make(
                     viewHolder.itemView, R.string.article_delete_successful,
                     Snackbar.LENGTH_LONG).apply {
-                        setAction(getString(R.string.undo)){
-                            presenter.saveArticle(article)
-                            mainAdapter.notifyDataSetChanged()
-                        }
+                    setAction(getString(R.string.undo)){
+                        presenter.saveArticle(article)
+                        mainAdapter.notifyDataSetChanged()
+                    }
                     show()
                 }
 
@@ -61,12 +67,13 @@ class FavoriteActivity : AbstractActivity(), ViewHome.Favorite{
 
         }
         ItemTouchHelper(itemTouchPerCallback).apply {
-            attachToRecyclerView(rvFavorite)
+            attachToRecyclerView(binding.rvFavorite)
         }
         presenter.getAll()
     }
+
     private fun configRecycle(){
-        with(rvFavorite){
+        with(binding.rvFavorite){
             adapter = mainAdapter
             layoutManager = LinearLayoutManager(this@FavoriteActivity)
             addItemDecoration(

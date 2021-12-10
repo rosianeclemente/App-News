@@ -9,22 +9,27 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.app_news.R
 import com.example.app_news.adapter.MainAdapter
+import com.example.app_news.databinding.ActivitySearchBinding
 import com.example.app_news.model.Article
 import com.example.app_news.model.data.NewsDataSource
 import com.example.app_news.presenter.ViewHome
 import com.example.app_news.presenter.search.SearchPresenter
 import com.example.app_news.utils.UtilQueryTextListener
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_search.*
 
-class SearchActivity : AbstractActivity(), ViewHome.View{
+
+class SearchActivity : AppCompatActivity(), ViewHome.View{
     private val mainAdapter by lazy{
         MainAdapter()
     }
     private lateinit var  presenter: SearchPresenter
-    override fun getLayout(): Int = R.layout.activity_search
+    private lateinit var  binding: ActivitySearchBinding
 
-    override fun onInject() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivitySearchBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+
         val dataSource = NewsDataSource(this)
         presenter = SearchPresenter(this, dataSource)
         configRecycle()
@@ -32,8 +37,9 @@ class SearchActivity : AbstractActivity(), ViewHome.View{
         clickAdapter()
     }
 
+
     private fun search(){
-        searchNews.setOnQueryTextListener(
+        binding.searchNews.setOnQueryTextListener(
             UtilQueryTextListener(
                 this.lifecycle
             ){
@@ -41,14 +47,14 @@ class SearchActivity : AbstractActivity(), ViewHome.View{
                 newText?.let{ query ->
                     if (query.isNotEmpty()){
                         presenter.search(query)
-                        rvProgressBarSearch.visibility = View.VISIBLE
+                        binding.rvProgressBarSearch.visibility = View.VISIBLE
                     }
                 }
             }
         )
     }
     private fun configRecycle(){
-        with(rvSearch){
+        with(binding.rvSearch){
             adapter = mainAdapter
             layoutManager = LinearLayoutManager(this@SearchActivity)
             addItemDecoration(
@@ -67,7 +73,7 @@ class SearchActivity : AbstractActivity(), ViewHome.View{
         }
     }
     override fun showProgressBar() {
-       rvProgressBarSearch.visibility = View.VISIBLE
+       binding.rvProgressBarSearch.visibility = View.VISIBLE
     }
 
     override fun showFailure(message: String) {
@@ -75,7 +81,7 @@ class SearchActivity : AbstractActivity(), ViewHome.View{
     }
 
     override fun hideProgressbar() {
-        rvProgressBarSearch.visibility = View.INVISIBLE
+        binding.rvProgressBarSearch.visibility = View.INVISIBLE
     }
 
     override fun showArticles(articles: List<Article>) {
