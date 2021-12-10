@@ -49,17 +49,19 @@ class MainAdapter : RecyclerView.Adapter<MainAdapter.ArticleViewHolder>() {
 
     override fun onBindViewHolder(holder: ArticleViewHolder, position: Int) {
 
-        with(holder){
-            with(differ.currentList[position]){
+        with(holder) {
+            with(differ.currentList[position]) {
                 Glide.with(holder.itemView.context).load(urlToImage).into(binding.ivArticleImage)
-                binding.tvTitle.text = author ?: source?.name // pode ser substituido por"Autor nao encontrado"
+                binding.tvTitle.text =
+                    author ?: source?.name // pode ser substituido por"Autor nao encontrado"
                 binding.tvDescription.text = description
                 binding.tvSource.text = source?.name ?: author
                 binding.tvPublishedAt.text = publishedAt?.getDateTimeFormatted()
 
-                holder.itemView.setOnClickListener { onItemClickListener?.let { click ->
-                    click(this)
-                }
+                holder.itemView.setOnClickListener {
+                    onItemClickListener?.let { click ->
+                        click(this)
+                    }
 
                 }
             }
@@ -72,10 +74,7 @@ class MainAdapter : RecyclerView.Adapter<MainAdapter.ArticleViewHolder>() {
     }
 
 
-
-   private fun String.getDateTimeFormatted(): String {
-
-
+    private fun String.getDateTimeFormatted(): String {
         try {
 
             val dateFormat = SimpleDateFormat("yyyy-MM-dd", getLocale())
